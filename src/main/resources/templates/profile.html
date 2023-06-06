@@ -1,0 +1,145 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль</title>
+</head>
+<body>
+
+<section layout:fragment="content">
+
+    <div class="container mt-3">
+        <div class="row gutters-sm">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <h4 class="mt-1" th:text="${userInfo.user.getName()}">Name</h4>
+                            <form th:method="POST" th:action="@{/logout}" class="w-100 mt-2">
+                                <input type="submit"
+                                       class="btn btn-outline-dark me-2 ui-helper-clearfix w-100"
+                                       value="Выйти"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-4"><h6 class="mb-0">Имя</h6></div>
+                            <div class="col-sm-8 text-secondary" th:text="${userInfo.user.getName()}"></div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-4"><h6 class="mb-0">Email</h6></div>
+                            <div class="col-sm-8 text-secondary" th:text="${userInfo.user.getEmail()}"></div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-4"><h6 class="mb-0">Баланс</h6></div>
+                            <div class="col-sm-4 text-secondary" th:text="${userInfo.user.getBalance() + '₽'}"></div>
+                            <a class="btn btn-primary btn-block col-sm-4 "
+                               th:href="@{/user/balance-top-up}">Пополнить</a>
+                        </div>
+                        <hr>
+                        <!--                        <div class="row">-->
+                        <!--                            <div class="col-sm-4"><h6 class="mb-0">Последний заказ</h6></div>-->
+                        <!--                            <div class="col-sm-8 text-secondary">???</div>-->
+                        <!--                        </div>-->
+                        <!--                        <hr>-->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <a class="btn btn-primary btn-block "
+                                   th:href="@{/user/edit}">Изменить</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row gutters-sm">
+                    <!-- Корзина -->
+                    <div class="col-sm-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="d-flex align-items-center mb-3">
+                                    Корзина
+                                </h6>
+                                <ul class="list-group mb-3">
+                                    <li th:each="product: ${cart}"
+                                        class="list-group-item d-flex justify-content-between lh-sm">
+                                        <div>
+                                            <h6 class="my-0" th:text="${product.getName()}"></h6>
+                                            <small class="text-muted"
+                                                   th:text="${product.getDescription().length() >  20 ? product.getDescription().substring(0, 20) + '...' : product.getDescription()}"></small>
+                                        </div>
+                                        <form th:action="@{/user/remove-from-cart/{id}(id=${product.getId()})}"
+                                              th:method="post">
+                                            <span th:class="${product.isDiscount()} ? 'text-muted text-decoration-line-through'"
+                                                  th:text="${product.getPrice() + '₽'}"></span>
+                                            <span th:if="${product.isDiscount()}"
+                                                  th:text="${product.getDiscountPrice() + '₽'}"></span>
+
+                                            <input type="hidden" name="productId" th:value="${product.getId()}">
+                                            <button type="submit" class="btn btn-sm btn-outline">
+                                                <svg style="height: 16px; width: 16px;"
+                                                     xmlns="http://www.w3.org/2000/svg"
+                                                     fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                     stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between bg-light">
+                                        <div class="text-success">
+                                            <h6 class="my-0">Итого</h6>
+                                        </div>
+                                        <span class="text-success"><strong th:text="${cartTotal + '₽'}"></strong></span>
+                                    </li>
+                                </ul>
+                                <form class="d-inline" th:action="@{/user/checkout}"
+                                      method="post"
+                                      onsubmit="return confirm('Вы действительно хотите приобрести данные товары?');">
+                                    <button type="submit" class="btn btn-primary btn-block">Оформить заказ</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="d-flex align-items-center mb-3 ">Список покупок</h6>
+                                <ul class="list-group ">
+                                    <li th:each="item: ${boughtProducts}"
+                                        class="list-group-item d-flex justify-content-between lh-sm">
+                                        <div class="d-flex">
+                                            <div>
+                                                <h6 class="my-0" th:text="${item.getName()}"></h6>
+                                                <small th:text="${item.getDescription().length() >  20 ? item.getDescription().substring(0, 20) + '...' : item.getDescription()}"
+                                                       class="text-muted"></small>
+                                            </div>
+                                        </div>
+                                        <a th:href="@{/products/{id}(id=${item.getId()})}"
+                                           class="text-muted btn btn-outline btn-sm">
+                                            <svg style="height: 24px;width: 24px;"
+                                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                      d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+                                            </svg>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
