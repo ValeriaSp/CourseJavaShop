@@ -1,0 +1,3 @@
+name,password,email,balance,role
+Лера,$2a$10$zuXpeqyt5oFDb5GndtE88usY1AEN70Z2t7PW/MN6U5vnXmkAD/OMO,valeria@mail.ru,2000,ROLE_ADMIN
+Артём,$2a$10$ORT7gBy8.JLqhsPluvaTjO7EK1DD2NIb3BWhSOIISOCXmLveN01u6,artem@mail.ru,2000,ROLE_USER

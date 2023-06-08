@@ -1,0 +1,72 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Изменить данные профиля</title>
+</head>
+<body>
+
+<section layout:fragment="content">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Пополнение баланса</h4>
+                    </div>
+                    <div class="card-body" th:if="${!success}">
+                        <form th:action="@{/user/balance-top-up}" th:method="POST" th:object="${balanceTopUpDTO}">
+                            <div class="form-group mb-3">
+                                <label for="amount">Сумма пополнения</label>
+                                <input th:field="*{amount}" type="number" class="form-control" id="amount" name="amount"
+                                       placeholder="Введите сумму" required>
+                                <div class="form-text">Минимальная сумма пополнения 100 рублей</div>
+                                <div th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"
+                                     class="alert alert-danger mt-2" role="alert">
+                                </div>
+                            </div>
+
+                            <!-- Номер телефона -->
+                            <div class="form-group mb-3">
+                                <label for="phone">Номер телефона</label>
+                                <input th:field="*{phone}" type="text" class="form-control" id="phone" name="phone"
+                                       placeholder="Введите номер телефона" required>
+                                <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"
+                                     class="alert alert-danger mt-2" role="alert">
+                                </div>
+                            </div>
+
+                            <!-- Имя держателя карты -->
+                            <div class="form-group mb-3">
+                                <label for="cardHolder">Имя держателя карты</label>
+                                <input th:field="*{name}" type="text" class="form-control" id="cardHolder"
+                                       name="cardHolder" placeholder="Введите имя держателя карты" required>
+                                <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+                                     class="alert alert-danger mt-2" role="alert">
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3 text-right w-100">
+                                <button type="submit" class="btn btn-primary">Продолжить</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-body" th:if="${success}">
+                        <h5 class="card-title">Заявка на пополнение создана</h5>
+                        <p class="card-text">Теперь необходимо сделать перевод на указанный номер с определённым
+                            комментарием к платежу.</p>
+                        <p class="card-text">Номер: +7 (777) 777-77-77</p>
+                        <p class="card-text" th:text="${'Сумма пополнения: ' + request.amount + ' ₽'}"></p>
+                        <p class="card-text" th:text="${'Комментарий к платежу: #' + request.id}"></p>
+                        <a href="https://online.sberbank.ru/" target="_blank" class="btn btn-primary">
+                            Перейти к оплате</a>
+                        <a th:href="@{/user/profile}" class="btn btn-secondary">Вернуться в профиль</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
