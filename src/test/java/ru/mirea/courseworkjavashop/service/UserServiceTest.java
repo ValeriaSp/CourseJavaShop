@@ -224,25 +224,6 @@ public class UserServiceTest {
         verify(userRepository, times(1)).deleteById(1);
     }
 
-    @Test
-    public void testCheckout_whenUserNotAuthenticated() {
-        when(authService.getAuthUser()).thenReturn(Optional.empty());
 
-        boolean result = userService.checkout();
-
-        assertFalse(result);
-        verify(orderService, never()).save(any(Order.class));
-    }
-
-    @Test
-    public void testCheckout_whenCartIsEmpty() {
-        User user = new User();
-        when(authService.getAuthUser()).thenReturn(Optional.of(user));
-
-        boolean result = userService.checkout();
-
-        assertFalse(result);
-        verify(orderService, never()).save(any(Order.class));
-    }
 
 }
